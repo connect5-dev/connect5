@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>Cancer Connect - Team</title>
+      <link rel="stylesheet" href="css/style.css" />
+   </head>
+   <body>
+      <header class="site-header">
+         <div class="branding">
+            <div class="project-name">Cancer Connect</div>
+            <div class="team-name">Connect 5</div>
+         </div>
+         <nav class="topnav" aria-label="Primary">
+            <ul class="nav-grid">
+               <li><a href="index.html">Home</a></li>
+               <li><a class="active" href="team.html">Team</a></li>
+               <li><a href="synopsis.html">Synopsis</a></li>
+               <li><a href="artifacts.html">Artifacts</a></li>
+            </ul>
+         </nav>
+      </header>
+      <main class="container">
+         <section>
+            <h1>Team</h1>
+            <ul class="key-facts">
+               <li><strong>Sponsoring Organization:</strong> 13thirty Cancer Connect, Inc.</li>
+               <li><strong>Sponsor Contact:</strong> Lauren Spiker, Executive Director</li>
+               <li><strong>Coach:</strong> Parul Patel</li>
+            </ul>
+         </section>
+         <section>
+            <h2>Team Members and Roles</h2>
+            <ul>
+               <li>Will Hoover — Project Manager</li>
+               <li>Joe Baillie — Communication Lead</li>
+               <li>Jade Condez — UI/UX Lead</li>
+               <li>Chase Elliott — Software Architectural Lead</li>
+               <li>Erik Langdon Potts — Technical Lead</li>
+            </ul>
+         </section>
+         <section>
+            <h2>Role Descriptions</h2>
+            <ul>
+               <li>Project Manager</li>
+               <ul>
+                  <li>Management of Kanban Board</li>
+                  <li>Sprint planning</li>
+                  <ul>
+                     <li>Backlog bar tracking</li>
+                     <li>Velocity tracking</li>
+                  </ul>
+                  <li>Task creation/refinement</li>
+                  <li>Managing/running standups</li>
+               </ul>
+               <br>
+               <li>Communication Lead</li>
+               <ul>
+                  <li>Direct sponsor and stakeholder communication</li>
+                  <li>Sponsor advocacy during meetings</li>
+                  <li>Requirement gathering and aggregation</li>
+                  <li>Documentation review and aggregation</li>
+                  <li>Task verification</li>
+               </ul>
+               <br>
+               <li>UI/UX Lead</li>
+               <ul>
+                  <li>Person who congregates the UI/UX information</li>
+                  <li>Person who will be the subject matter expert on UI/UX decisions</li>
+                  <li>Will take point on UI communication with 13thirty + user testing</li>
+               </ul>
+               <br>
+               <li>Software Architectural Lead</li>
+               <ul>
+                  <li>Person who congregates architecture document </li>
+                  <li>Be SME on what architecture decisions are and why they were made</li>
+               </ul>
+               <br>
+               <li>Technical Lead</li>
+               <ul>
+                  <li>Person who is aware of the version control, branches, and state of the code</li>
+                  <li>Person who sets the cadence for code reviews </li>
+                  <li>CI/CD and other quality assurance</li>
+               </ul>
+            </ul>
+         </section>
+      </main>
+      <footer class="site-footer">
+         <p>&copy; <span id="year"></span> Connect 5</p>
+      </footer>
+      <script>
+         document.getElementById('year').textContent = new Date().getFullYear();
+      </script>
+   </body>
+</html>
