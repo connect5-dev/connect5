@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>Cancer Connect - Time Tracking</title>
+      <link rel="stylesheet" href="css/style.css" />
+      <link rel="stylesheet" href="css/time.css" />
+   </head>
+   <body>
+      <header class="site-header">
+         <div class="branding">
+            <div class="project-name">Cancer Connect</div>
+            <div class="team-name">Connect 5</div>
+         </div>
+         <nav class="topnav" aria-label="Primary">
+            <ul class="nav-grid">
+               <li><a href="index.html">Home</a></li>
+               <li><a href="team.html">Team</a></li>
+               <li><a class="active" href="time.html">Time Tracking</a></li>
+               <li><a href="artifacts.html">Artifacts</a></li>
+            </ul>
+         </nav>
+      </header>
+      <main class="container">
+         <section>
+            <h1>Time Tracking</h1>
+            <div class="time-controls" role="region" aria-label="Week controls">
+               <div>
+                  <label for="weekSelect" class="muted">Week:</label>
+                  <select id="weekSelect" aria-label="Select week"></select>
+               </div>
+               <div class="muted">
+                  Week total: <span id="weekTotal">0m</span>
+               </div>
+            </div>
+            <div id="weekContainer" aria-live="polite"></div>
+         </section>
+      </main>
+      <footer class="site-footer">
+         <p>&copy; <span id="year"></span> Connect 5</p>
+      </footer>
+      <script>
+         const JIRA_BASE_URL = "https://cancerconnect.atlassian.net/browse/";
+         // key is the Jira task identifer
+         const timeData = [
+           {
+             id: "2025-09-15",
+             label: "Week of Sep 15-21, 2025",
+             members: [
+               {
+                 name: "Will Hoover",
+                 entries: [
+                     {
+                        key: "CARE-26", title: "Set up time tracking solution", minutes: 20
+                     },
+                 ]
+               },
+               {
+                 name: "Joe Baillie",
+                 entries: [
+                     {
+                        key: "CARE-16", title: "Meeting Agenda 9/16/25", minutes: 0
+                     },
+                 ]
+               },
+               {
+                 name: "Jade Condez",
+                 entries: [
+                     {
+                        key: "CARE-18", title: "Tools and techniques", minutes: 0
+                     },
+                 ]
+               },
+               {
+                 name: "Chase Elliott",
+                 entries: [
+                     {
+                        key: "CARE-14", title: "Add ideas for tools and metrics", minutes: 0
+                     },
+                 ]
+               },
+               {
+                 name: "Erik Langdon Potts",
+                 entries: [
+                     {
+                        key: "CARE-35", title: "Time tracking tab", minutes: 75
+                     },
+                 ]
+               }
+             ]
+           },
+         //   {
+         //     id: "2025-09-22",
+         //     label: "Week of Sep 22-28, 2025",
+         //     members: [
+         //       {
+         //         name: "Will Hoover",
+         //         entries: [
+         //             {
+         //                key: "CARE-XX", title: "XXX", minutes: 200
+         //             },
+         //         ]
+         //       },
+         //       {
+         //         name: "Joe Baillie",
+         //         entries: [
+         //             {
+         //                key: "CARE-XX", title: "XXX", minutes: 122
+         //             },
+         //         ]
+         //       },
+         //       {
+         //         name: "Jade Condez",
+         //         entries: [
+         //             {
+         //                key: "CARE-XX", title: "XXX", minutes: 164
+         //             },
+         //         ]
+         //       },
+         //       {
+         //         name: "Chase Elliott",
+         //         entries: [
+         //             {
+         //                key: "CARE-XX", title: "XXX", minutes: 146
+         //             },
+         //         ]
+         //       },
+         //       {
+         //         name: "Erik Langdon Potts",
+         //         entries: [
+         //             {
+         //                key: "CARE-X", title: "XXX", minutes: 999
+         //             },
+         //         ]
+         //       }
+         //     ]
+         //   }
+         ];
+         
+         const fmtMinutes = (m) => {
+           const h = Math.floor(m / 60);
+           const min = m % 60;
+           if (h && min) return `${h}h ${min}m`;
+           if (h && !min) return `${h}h`;
+           return `${min}m`;
+         };
+         
+         const jiraUrl = (key) => {
+           if (!JIRA_BASE_URL) return "#";
+           const base = JIRA_BASE_URL.endsWith("/") ? JIRA_BASE_URL : JIRA_BASE_URL + "/";
+           return base + encodeURIComponent(key);
+         };
+         
+         const totalMinutes = (entries) =>
+           (entries || []).reduce((sum, e) => sum + (e.minutes || 0), 0);
+         
+         const weekSelect = document.getElementById("weekSelect");
+         const weekContainer = document.getElementById("weekContainer");
+         const weekTotalEl = document.getElementById("weekTotal");
+         
+         function populateWeekSelect() {
+           const weeks = [...timeData].sort((a, b) => (a.id < b.id ? 1 : -1));
+           weeks.forEach((w, i) => {
+             const opt = document.createElement("option");
+             opt.value = w.id;
+             opt.textContent = w.label || w.id;
+             if (i === 0) opt.selected = true;
+             weekSelect.appendChild(opt);
+           });
+         }
+         
+         function renderWeek(id) {
+           const week = timeData.find((w) => w.id === id);
+           if (!week) return;
+         
+           weekContainer.innerHTML = "";
+         
+           const weekMinutes = (week.members || []).reduce(
+             (sum, m) => sum + totalMinutes(m.entries),
+             0
+           );
+           weekTotalEl.textContent = fmtMinutes(weekMinutes);
+         
+           (week.members || []).forEach((member) => {
+             const card = document.createElement("details");
+             card.className = "member-card";
+             card.open = true;
+         
+             const memberTotal = totalMinutes(member.entries);
+         
+             const summary = document.createElement("summary");
+             summary.innerHTML = `
+               <span>${member.name}</span>
+               <span class="badge">Total: ${fmtMinutes(memberTotal)}</span>
+             `;
+             card.appendChild(summary);
+         
+             if (!member.entries || member.entries.length === 0) {
+               const empty = document.createElement("div");
+               empty.className = "empty";
+               empty.textContent = "None logged";
+               card.appendChild(empty);
+             } else {
+               const ul = document.createElement("ul");
+               ul.className = "entries";
+         
+               member.entries.forEach((e) => {
+                 const li = document.createElement("li");
+         
+                 const keyLink = document.createElement("a");
+                 keyLink.href = jiraUrl(e.key);
+                 keyLink.target = "_blank";
+                 keyLink.rel = "noopener noreferrer";
+                 keyLink.className = "issue-key";
+                 keyLink.textContent = e.key;
+         
+                 const titleSpan = document.createElement("span");
+                 titleSpan.className = "task-title";
+                 titleSpan.textContent = e.title || "";
+         
+                 const durSpan = document.createElement("span");
+                 durSpan.className = "duration";
+                 durSpan.textContent = fmtMinutes(e.minutes || 0);
+         
+                 li.appendChild(keyLink);
+                 li.appendChild(titleSpan);
+                 li.appendChild(durSpan);
+                 ul.appendChild(li);
+               });
+         
+               card.appendChild(ul);
+             }
+         
+             weekContainer.appendChild(card);
+           });
+         }
+         
+         populateWeekSelect();
+         if (weekSelect.options.length > 0) {
+           renderWeek(weekSelect.value);
+         }
+         weekSelect.addEventListener("change", (e) => renderWeek(e.target.value));
+         
+         document.getElementById("year").textContent = new Date().getFullYear();
+      </script>
+   </body>
+</html>
